@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+
+@layer base {
+  /* Işık Tema */
+  :root {
+    --color-bg: #f6f8fa;
+    --color-card: #ffffff;
+    --color-panel: #ffffff;
+    --color-border: #d8dee4; /* Biraz daha belirgin */
+    --color-text-primary: #1f2328;
+    --color-text-secondary: #57606a; /* Daha iyi kontrast */
+    --color-primary: #0969da;
+    --color-primary-hover: #2f81f7;
+    --color-primary-text: #ffffff;
+    --color-themed-text: var(--color-primary);
+  }
+
+  /* Koyu Tema */
+  html.dark {
+    --color-bg: #0d1117;
+    --color-card: #161b22;
+    --color-panel: #161b22;
+    --color-border: #30363d;
+    --color-text-primary: #e6edf3;
+    --color-text-secondary: #8b949e; /* Daha okunaklı */
+    --color-primary: #2f81f7;
+    --color-primary-hover: #58a6ff;
+    --color-primary-text: #ffffff;
+    --color-themed-text: var(--color-primary);
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
