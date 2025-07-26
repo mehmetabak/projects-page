@@ -1,199 +1,513 @@
 // src/components/ProjectDetail.jsx
 
-import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
-import { FiX, FiMaximize2, FiMinimize2, FiShare2, FiExternalLink, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { useState, useEffect, useRef } from 'react';
+import { FiX, FiMaximize2, FiMinimize2, FiShare2, FiExternalLink, FiChevronLeft, FiChevronRight, FiBookmark, FiCopy, FiCheck, FiGithub, FiPlay } from 'react-icons/fi';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import remarkGfm from 'remark-gfm'; // Gelişmiş Markdown desteği (tablolar, vb.)
-import ImageWithFallback from './ImageWithFallback'; // Varsayılan resim bileşeni
+import remarkGfm from 'remark-gfm';
+import ImageWithFallback from './ImageWithFallback';
 
-// Panelin minimum genişliğini piksel olarak tanımla
 const MIN_WIDTH_PX = 450;
+const MAX_WIDTH_RATIO = 0.9;
+const DEFAULT_WIDTH_RATIO = 0.4;
 
-const ProjectDetail = ({ project, onClose, setSearchTerm, theme, onNext, onPrevious }) => {
+const debounce = (func, wait) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+};
+
+const ProjectDetail = ({ 
+  project, 
+  onClose, 
+  setSearchTerm, 
+  theme, 
+  onNext, 
+  onPrevious,
+  forceFullscreen = false,
+  projectCount = 0
+}) => {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
-  const [isFullScreen, setIsFullScreen] = useState(false);
   
-  // Sürükleme sınırlarını belirlemek için backdrop'a referans
+  const [isFullScreen, setIsFullScreen] = useState(forceFullscreen);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [copyNotification, setCopyNotification] = useState('');
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [readingTime, setReadingTime] = useState(0);
+  
   const constraintsRef = useRef(null);
+  const panelRef = useRef(null);
+  const scrollableContentRef = useRef(null);
+  const lastManualWidth = useRef(null);
 
-  // Performanslı genişlik yönetimi için useMotionValue.
-  // Bu hook, React'in state döngüsünü tetiklemeden animasyon değerlerini güncelleyerek
-  // sürükleme işlemini çok daha akıcı hale getirir.
-  const width = useMotionValue(Math.max(MIN_WIDTH_PX, window.innerWidth * 0.4));
-
-  // Klavyeden kontrol (Escape ve Ok Tuşları)
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') onClose();
-      if (event.key === 'ArrowRight') onNext?.();
-      if (event.key === 'ArrowLeft') onPrevious?.();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose, onNext, onPrevious]);
-
-  // Ekran boyutu değiştiğinde panelin taşmasını engellemek için genişliği ayarla
-  useEffect(() => {
-    const handleResize = () => {
-      if (!isFullScreen) {
-        width.set(Math.max(MIN_WIDTH_PX, Math.min(width.get(), window.innerWidth * 0.9)));
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isFullScreen, width]);
+  const initialWidth = useMemo(() => 
+    Math.max(MIN_WIDTH_PX, window.innerWidth * DEFAULT_WIDTH_RATIO), 
+    []
+  );
   
-  // Paylaşım fonksiyonu
-  const handleShare = async () => {
-    // Projeye özel URL'i oluştur
-    const shareUrl = `${window.location.origin}/projects/${project.id}`;
-    const shareData = {
-      title: project.title[lang],
-      text: project.summary[lang],
-      url: shareUrl,
-    };
-    // Web Share API'yi destekliyorsa kullan
-    if (navigator.share && navigator.canShare(shareData)) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        console.error("Paylaşım hatası:", err);
-      }
+  const width = useMotionValue(initialWidth);
+  const opacity = useTransform(width, 
+    [MIN_WIDTH_PX, window.innerWidth * MAX_WIDTH_RATIO], 
+    [0.8, 1]
+  );
+
+  // Reading time calculation
+  useEffect(() => {
+    if (project?.description?.[lang]) {
+      const words = project.description[lang].split(/\s+/).length;
+      const avgWordsPerMinute = lang === 'tr' ? 200 : 250;
+      setReadingTime(Math.ceil(words / avgWordsPerMinute));
+    }
+  }, [project?.description, lang]);
+
+  // Force fullscreen for external links
+  useEffect(() => {
+    if (forceFullscreen && !isFullScreen) {
+      setIsFullScreen(true);
+    }
+  }, [forceFullscreen]);
+
+  const toggleFullscreen = useCallback(() => {
+    if (!isFullScreen) {
+      lastManualWidth.current = width.get();
+      setIsFullScreen(true);
     } else {
-      // Desteklemiyorsa, linki panoya kopyala ve kullanıcıyı bilgilendir
-      navigator.clipboard.writeText(shareData.url).then(() => {
-        alert("Bağlantı panoya kopyalandı!");
+      setIsFullScreen(false);
+      requestAnimationFrame(() => {
+        width.set(lastManualWidth.current || initialWidth);
       });
     }
+  }, [isFullScreen, width, initialWidth]);
+
+  const toggleBookmark = useCallback(() => {
+    if (!project?.id) return;
+    const newBookmarkStatus = !isBookmarked;
+    setIsBookmarked(newBookmarkStatus);
+    
+    try {
+      const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+      const updatedBookmarks = newBookmarkStatus 
+        ? [...new Set([...bookmarks, project.id])]
+        : bookmarks.filter(id => id !== project.id);
+      
+      localStorage.setItem('bookmarks', JSON.stringify(updatedBookmarks));
+    } catch (err) {
+      console.error("Bookmark error:", err);
+    }
+  }, [isBookmarked, project?.id]);
+
+  const handleKeyDown = useCallback((event) => {
+    if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
+    
+    switch(event.key) {
+      case 'Escape':
+        onClose();
+        break;
+      case 'ArrowRight':
+        if (onNext) {
+          event.preventDefault();
+          onNext();
+        }
+        break;
+      case 'ArrowLeft':
+        if (onPrevious) {
+          event.preventDefault();
+          onPrevious();
+        }
+        break;
+      case 'f':
+      case 'F':
+        if (event.ctrlKey || event.metaKey) {
+          event.preventDefault();
+          toggleFullscreen();
+        }
+        break;
+      case 'b':
+      case 'B':
+        if (event.ctrlKey || event.metaKey) {
+          event.preventDefault();
+          toggleBookmark();
+        }
+        break;
+      case 's':
+      case 'S':
+        if (event.ctrlKey || event.metaKey) {
+          event.preventDefault();
+          handleShare();
+        }
+        break;
+    }
+  }, [onClose, onNext, onPrevious, toggleFullscreen, toggleBookmark]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
+
+  const handleResize = useCallback(
+    debounce(() => {
+      if (!isFullScreen) {
+        const maxWidth = window.innerWidth * MAX_WIDTH_RATIO;
+        const currentWidth = width.get();
+        if (currentWidth > maxWidth) {
+          width.set(Math.max(MIN_WIDTH_PX, maxWidth));
+        }
+      }
+    }, 100),
+    [isFullScreen, width]
+  );
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [handleResize]);
+
+  const handleShare = useCallback(async () => {
+    if (!project?.id) return;
+    
+    const shareUrl = `${window.location.origin}/projects/${project.id}`;
+    const shareData = {
+      title: project.title?.[lang] || 'Project',
+      text: project.summary?.[lang] || '',
+      url: shareUrl,
+    };
+
+    if (navigator.share && navigator.canShare?.(shareData)) {
+      try {
+        await navigator.share(shareData);
+        setCopyNotification('shared');
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          fallbackCopy(shareUrl);
+        }
+      }
+    } else {
+      fallbackCopy(shareUrl);
+    }
+  }, [project?.id, project?.title, project?.summary, lang]);
+
+  const fallbackCopy = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyNotification('copied');
+    } catch (err) {
+      console.error("Copy error:", err);
+      setCopyNotification('error');
+    }
+    setTimeout(() => setCopyNotification(''), 2000);
+  };
+
+  useEffect(() => {
+    if (!project?.id) return;
+    
+    try {
+      const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+      setIsBookmarked(bookmarks.includes(project.id));
+    } catch (err) {
+      console.error("Bookmark loading error:", err);
+      setIsBookmarked(false);
+    }
+
+    setImageLoaded(false);
+    scrollableContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [project?.id]);
+
+  const dragConstraints = useMemo(() => ({
+    left: -(Math.min(width.get(), window.innerWidth * MAX_WIDTH_RATIO) - MIN_WIDTH_PX),
+    right: 0
+  }), [width]);
+
+  if (!project) return null;
+
+  const notificationMessages = {
+    copied: t('linkCopied') || 'Link copied!',
+    shared: t('shared') || 'Shared!',
+    error: t('copyError') || 'Copy failed'
   };
 
   return (
     <AnimatePresence>
-      {project && (
-        // Arka Plan (Backdrop) - Tema uyumlu
+      <motion.div
+        key="backdrop"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+        className={`fixed inset-0 z-50 flex justify-end 
+          ${theme === 'dark' ? 'bg-black/60' : 'bg-gray-900/40'} backdrop-blur-sm`}
+        ref={constraintsRef}
+        onClick={onClose}
+      >
         <motion.div
-          key="backdrop"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className={`fixed inset-0 z-50 flex justify-end 
-            ${theme === 'dark' ? 'bg-black/60' : 'bg-gray-900/40'} backdrop-blur-sm`}
-          ref={constraintsRef}
-          onClick={onClose}
+          ref={panelRef}
+          layout
+          transition={{ type: 'spring', stiffness: 600, damping: 35 }}
+          style={{ 
+            width: isFullScreen ? '100vw' : width,
+            opacity
+          }}
+          initial={{ x: "100%", scale: 0.95 }}
+          animate={{ x: 0, scale: 1 }}
+          exit={{ x: "100%", scale: 0.95 }}
+          className="h-full bg-panel shadow-2xl flex flex-col border-l border-border overflow-hidden relative"
+          onClick={(e) => e.stopPropagation()}
         >
-          {/* Ana Panel */}
-          <motion.div
-            layout // Bu sihirli prop, 'isFullScreen' değiştiğinde boyut ve pozisyonu canlandırır
-            transition={{ type: 'spring', stiffness: 500, damping: 40 }}
-            style={{ width: isFullScreen ? '100vw' : width }} // Genişliği MotionValue'den al
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            className={`h-full bg-panel shadow-2xl flex flex-col border-l border-border overflow-hidden relative`}
-            onClick={(e) => e.stopPropagation()} // Panele tıklayınca kapanmasını engelle
-          >
-            {/* Yeniden Boyutlandırma Kolu (Sadece tam ekran değilken görünür) */}
-            {!isFullScreen && (
+          {/* Resize handle */}
+          {!isFullScreen && (
+            <motion.div
+              drag="x"
+              onDrag={(event, info) => {
+                const newWidth = Math.max(MIN_WIDTH_PX, 
+                  Math.min(window.innerWidth * MAX_WIDTH_RATIO, width.get() - info.delta.x)
+                );
+                width.set(newWidth);
+              }}
+              dragConstraints={dragConstraints}
+              dragElastic={0.05}
+              whileHover={{ scale: 1.1 }}
+              className="absolute left-0 top-0 bottom-0 w-3 cursor-col-resize group z-20 flex items-center justify-center"
+              aria-label="Resize panel"
+            >
+              <motion.div 
+                className="w-1 h-8 bg-primary/30 rounded-full group-hover:bg-primary/60 transition-colors"
+                whileHover={{ height: 32 }}
+              />
+            </motion.div>
+          )}
+
+          {/* Notification */}
+          <AnimatePresence>
+            {copyNotification && (
               <motion.div
-                drag="x"
-                onDrag={(event, info) => {
-                  width.set(width.get() - info.delta.x);
-                }}
-                dragConstraints={{
-                  left: -(Math.min(width.get(), window.innerWidth * 0.9) - MIN_WIDTH_PX),
-                  right: 0
-                }}
-                dragElastic={0.1}
-                className="absolute left-0 top-0 bottom-0 w-2 cursor-col-resize group z-10"
-                aria-label="Paneli yeniden boyutlandır"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className={`absolute top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full text-sm z-30 flex items-center gap-2 ${
+                  copyNotification === 'error' 
+                    ? 'bg-red-500 text-white' 
+                    : 'bg-green-500 text-white'
+                }`}
               >
-                <div className="w-0.5 h-full bg-transparent group-hover:bg-primary transition-colors duration-200 mx-auto" />
+                <FiCheck size={16} /> 
+                {notificationMessages[copyNotification]}
               </motion.div>
             )}
+          </AnimatePresence>
 
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={project.id} // Proje değiştiğinde içeriğin yeniden canlanmasını sağlar
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                variants={{
-                  visible: { opacity: 1, transition: { staggerChildren: 0.07 } },
-                  hidden: { opacity: 0 }
-                }}
-                className="flex flex-col h-full"
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={project.id}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={{
+                visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
+                hidden: { opacity: 0 }
+              }}
+              className="flex flex-col h-full"
+            >
+              {/* Header */}
+              <motion.header 
+                variants={{ visible: { y: 0, opacity: 1 }, hidden: { y: -20, opacity: 0 } }} 
+                className="p-4 flex justify-between items-start gap-4 border-b border-border flex-shrink-0 bg-panel/80 backdrop-blur-sm"
               >
-                {/* ÜST BÖLÜM */}
-                <motion.header 
-                  variants={{ visible: { y: 0, opacity: 1 }, hidden: { y: -20, opacity: 0 } }} 
-                  className="p-4 flex justify-between items-center border-b border-border flex-shrink-0"
-                >
-                  <h2 className="text-xl font-bold font-display text-themed-text truncate pr-4">{project.title[lang]}</h2>
-                  <div className="flex items-center gap-1">
-                    {project.link && <a href={project.link} target="_blank" rel="noopener noreferrer" title="Canlı siteye git" className="p-2 rounded-full text-secondary hover:bg-bg transition-colors"><FiExternalLink size={18} /></a>}
-                    {navigator.share && <button onClick={handleShare} title="Paylaş" className="p-2 rounded-full text-secondary hover:bg-bg transition-colors"><FiShare2 size={18} /></button>}
-                    <button onClick={() => setIsFullScreen(!isFullScreen)} title={isFullScreen ? "Küçült" : "Tam ekran yap"} className="p-2 rounded-full text-secondary hover:bg-bg transition-colors">{isFullScreen ? <FiMinimize2 size={18} /> : <FiMaximize2 size={18} />}</button>
-                    <button onClick={onClose} title="Kapat (Esc)" className="p-2 rounded-full text-secondary hover:bg-bg transition-colors"><FiX size={20} /></button>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h2 className="text-xl font-bold font-display text-themed-text truncate">
+                      {project.title?.[lang] || 'Untitled Project'}
+                    </h2>
+                    {readingTime > 0 && (
+                      <span className="text-xs text-secondary bg-secondary/10 px-2 py-1 rounded-full">
+                        {readingTime} {t('minRead') || 'min read'}
+                      </span>
+                    )}
                   </div>
-                </motion.header>
-
-                {/* İÇERİK BÖLÜMÜ */}
-                <div className="flex-grow overflow-y-auto">
-                  <motion.div 
-                    variants={{ visible: { scale: 1, opacity: 1 }, hidden: { scale: 0.95, opacity: 0 } }}
-                    transition={{ duration: 0.4, ease: 'easeOut' }}
-                  >
-                    <ImageWithFallback src={project.image} alt={project.title[lang]} className="w-full h-60 object-cover" />
-                  </motion.div>
-                  <motion.div 
-                    variants={{ visible: { y: 0, opacity: 1 }, hidden: { y: 20, opacity: 0 } }} 
-                    className="p-6 prose dark:prose-invert max-w-none 
-                                    prose-h2:font-display prose-headings:text-themed-text 
-                                    prose-p:text-secondary 
-                                    prose-a:text-themed-text hover:prose-a:underline
-                                    prose-strong:text-primary-text
-                                    prose-li:text-secondary
-                                    prose-blockquote:border-themed-text"
-                  >
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{project.description[lang]}</ReactMarkdown>
-                  </motion.div>
+                  <p className="text-sm text-secondary line-clamp-2">
+                    {project.summary?.[lang] || ''}
+                  </p>
+                  {projectCount > 1 && (
+                    <p className="text-xs text-secondary/70 mt-1">
+                      {t('projectNavigation') || 'Use ← → to navigate between projects'}
+                    </p>
+                  )}
                 </div>
+                
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={toggleBookmark}
+                    title={`${isBookmarked ? t('removeBookmark') : t('addBookmark')} (Ctrl+B)`}
+                    className={`p-2 rounded-full transition-colors ${
+                      isBookmarked ? 'text-yellow-500 bg-yellow-500/10' : 'text-secondary hover:bg-bg'
+                    }`}
+                  >
+                    <FiBookmark size={18} fill={isBookmarked ? 'currentColor' : 'none'} />
+                  </motion.button>
+                  
+                  {project.github && (
+                    <motion.a
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={t('viewGithub') || 'View on GitHub'}
+                      className="p-2 rounded-full text-secondary hover:bg-bg transition-colors"
+                    >
+                      <FiGithub size={18} />
+                    </motion.a>
+                  )}
+                  
+                  {project.link && (
+                    <motion.a
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={t('viewLive') || 'View live site'}
+                      className="p-2 rounded-full text-secondary hover:bg-bg transition-colors"
+                    >
+                      <FiExternalLink size={18} />
+                    </motion.a>
+                  )}
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleShare}
+                    title={`${t('share')} (Ctrl+S)`}
+                    className="p-2 rounded-full text-secondary hover:bg-bg transition-colors"
+                  >
+                    {navigator.share ? <FiShare2 size={18} /> : <FiCopy size={18} />}
+                  </motion.button>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={toggleFullscreen}
+                    title={`${isFullScreen ? t('minimize') : t('maximize')} (Ctrl+F)`}
+                    className="p-2 rounded-full text-secondary hover:bg-bg transition-colors"
+                  >
+                    {isFullScreen ? <FiMinimize2 size={18} /> : <FiMaximize2 size={18} />}
+                  </motion.button>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.1, rotate: 90 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={onClose}
+                    title={`${t('close')} (Esc)`}
+                    className="p-2 rounded-full text-secondary hover:bg-bg transition-colors"
+                  >
+                    <FiX size={20} />
+                  </motion.button>
+                </div>
+              </motion.header>
 
-                {/* ALT BÖLÜM (FOOTER) - NAVİGASYON BUTONLARI */}
-                <motion.footer 
-                  variants={{ visible: { y: 0, opacity: 1 }, hidden: { y: 20, opacity: 0 } }} 
-                  className="p-4 border-t border-border flex-shrink-0 bg-bg/80 backdrop-blur-sm"
+              {/* Content */}
+              <div 
+                className="flex-grow overflow-y-auto custom-scrollbar" 
+                ref={scrollableContentRef}
+              >
+                <motion.div 
+                  variants={{ visible: { scale: 1, opacity: 1 }, hidden: { scale: 0.98, opacity: 0 } }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                  className="relative overflow-hidden"
                 >
-                  <div className="flex justify-between items-center">
-                    <button onClick={onPrevious} className="flex items-center gap-2 p-2 rounded-lg text-secondary hover:bg-card hover:text-primary-text transition-colors">
-                      <FiChevronLeft size={20} /> <span className="hidden sm:inline">{t('previous')}</span>
-                    </button>
-                    <div className="flex flex-wrap gap-2 justify-center">
-                        {project.tags.slice(0,3).map(tag => (
-                          <button 
-                            key={tag} 
-                            onClick={() => { onClose(); setTimeout(() => setSearchTerm(`#${tag}`), 150); }}
-                            className="text-xs font-medium bg-primary/10 text-themed-text rounded-full px-3 py-1 hover:bg-primary/20 transition-colors"
-                          >
-                            #{tag}
-                          </button>
-                        ))}
+                  <ImageWithFallback 
+                    src={project.image} 
+                    alt={project.title?.[lang] || 'Project image'} 
+                    className={`w-full h-60 object-cover transition-all duration-700 ${
+                      imageLoaded ? 'hover:scale-105' : 'scale-105 blur-sm'
+                    }`}
+                    onLoad={() => setImageLoaded(true)}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+                  
+                  {/* Image loading indicator */}
+                  {!imageLoaded && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-bg/50">
+                      <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
                     </div>
-                    <button onClick={onNext} className="flex items-center gap-2 p-2 rounded-lg text-secondary hover:bg-card hover:text-primary-text transition-colors">
-                      <span className="hidden sm:inline">{t('next')}</span> <FiChevronRight size={20} />
-                    </button>
-                  </div>
-                </motion.footer>
+                  )}
+                </motion.div>
+                
+                <motion.div 
+                  variants={{ visible: { y: 0, opacity: 1 }, hidden: { y: 20, opacity: 0 } }} 
+                  className="p-6 prose dark:prose-invert max-w-none 
+                            prose-h2:font-display prose-headings:text-themed-text 
+                            prose-p:text-secondary prose-p:leading-relaxed
+                            prose-a:text-primary hover:prose-a:text-primary/80
+                            prose-strong:text-primary-text
+                            prose-li:text-secondary
+                            prose-blockquote:border-primary prose-blockquote:bg-primary/5
+                            prose-code:bg-primary/10 prose-code:text-primary prose-code:rounded prose-code:px-1
+                            prose-pre:bg-card prose-pre:border prose-pre:border-border"
+                >
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {project.description?.[lang] || t('noDescription') || 'No description available.'}
+                  </ReactMarkdown>
+                </motion.div>
+              </div>
 
-              </motion.div>
-            </AnimatePresence>
-          </motion.div>
+              {/* Footer */}
+              <motion.footer 
+                variants={{ visible: { y: 0, opacity: 1 }, hidden: { y: 20, opacity: 0 } }} 
+                className="p-4 border-t border-border flex-shrink-0 bg-panel/90 backdrop-blur"
+              >
+                <div className="flex justify-between items-center">
+                  <motion.button
+                    whileHover={{ scale: 1.05, x: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={onPrevious}
+                    disabled={!onPrevious}
+                    className="flex items-center gap-2 p-2 rounded-lg text-secondary hover:bg-card hover:text-primary-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <FiChevronLeft size={20} />
+                    <span className="hidden sm:inline">{t('previous')}</span>
+                  </motion.button>
+                  
+                  <div className="flex flex-wrap gap-2 justify-center max-w-md">
+                    {project.tags?.slice(0, 6).map((tag, index) => (
+                      <motion.button 
+                        key={tag}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => { 
+                          onClose(); 
+                          setTimeout(() => setSearchTerm(`#${tag}`), 150); 
+                        }}
+                        className="text-xs font-medium bg-primary/10 text-primary border border-primary/20 rounded-full px-3 py-1 hover:bg-primary/20 hover:border-primary/40 transition-all"
+                      >
+                        #{tag}
+                      </motion.button>
+                    ))}
+                  </div>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.05, x: 2 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={onNext}
+                    disabled={!onNext}
+                    className="flex items-center gap-2 p-2 rounded-lg text-secondary hover:bg-card hover:text-primary-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span className="hidden sm:inline">{t('next')}</span>
+                    <FiChevronRight size={20} />
+                  </motion.button>
+                </div>
+              </motion.footer>
+            </motion.div>
+          </AnimatePresence>
         </motion.div>
-      )}
+      </motion.div>
     </AnimatePresence>
   );
 };
