@@ -12,12 +12,12 @@ export const projectsData = {
         en: "A TypeScript-based photo blog that reports EXIF camera details (aperture, shutter speed, ISO) for each image."
       },
       image: "/images/project1.png",
-      link: "https://github.com/mehmetabak/exif-photo-blog",
+      link: "https://github.com/mehmetabak/nAI",
       description: {
         tr: "## Proje Özeti\n\nTypeScript kullanılarak geliştirilen bu fotoğraf blogu, her fotoğraf için **EXIF kamera detaylarını** otomatik olarak analiz eder ve görüntüler.\n\n- **Teknolojiler:** TypeScript, Next.js\n- **Özellikler:** EXIF veri analizi, duyarlı tasarım, fotoğraf galerisi\n- **Güncellenme:** 26 Temmuz 2025",
         en: "## Project Summary\n\nThis photo blog developed using TypeScript automatically analyzes and displays **EXIF camera details** for each photo.\n\n- **Technologies:** TypeScript, Next.js\n- **Features:** EXIF data analysis, responsive design, photo gallery\n- **Updated:** July 26, 2025"
       },
-      tags: ["typescript", "nextjs", "photography", "exif", "web"],
+      tags: ["javascript", "python", "AI", "vite", "Generative AI", "web"],
       year: 2025}
   ],
   "Web Apps / Tools": [
