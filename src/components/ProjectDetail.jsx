@@ -1,11 +1,12 @@
 // src/components/ProjectDetail.jsx
 
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import ReactMarkdown from 'react-markdown';
-import { FiX, FiMaximize2, FiMinimize2, FiShare2, FiExternalLink, FiChevronLeft, FiChevronRight, FiBookmark, FiCopy, FiCheck, FiGithub, FiPlay } from 'react-icons/fi';
+import Markdown from 'markdown-to-jsx';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { FiX, FiMaximize2, FiMinimize2, FiShare2, FiExternalLink, FiChevronLeft, FiChevronRight, FiBookmark, FiCopy, FiCheck, FiGithub } from 'react-icons/fi';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import remarkGfm from 'remark-gfm';
 import ImageWithFallback from './ImageWithFallback';
 
 const MIN_WIDTH_PX = 450;
@@ -18,6 +19,44 @@ const debounce = (func, wait) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
   };
+};
+
+const MarkdownComponents = {
+  h2: ({ children }) => <h2 className="font-display text-themed-text text-2xl font-bold mt-8 mb-4 border-b border-border pb-2">{children}</h2>,
+  h3: ({ children }) => <h3 className="font-display text-themed-text text-xl font-bold mt-6 mb-3">{children}</h3>,
+  p: ({ children }) => <p className="text-secondary leading-relaxed mb-4">{children}</p>,
+  ul: ({ children }) => <ul className="list-disc list-inside space-y-2 mb-4 pl-4">{children}</ul>,
+  ol: ({ children }) => <ol className="list-decimal list-inside space-y-2 mb-4 pl-4">{children}</ol>,
+  li: ({ children }) => <li className="text-secondary">{children}</li>,
+  a: ({ children, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 underline transition-colors font-medium">{children}</a>,
+  strong: ({ children }) => <strong className="font-bold text-primary-text">{children}</strong>,
+  blockquote: ({ children }) => <blockquote className="border-l-4 border-primary bg-primary/5 p-4 my-6 italic text-secondary">{children}</blockquote>,
+  del: ({ children }) => <del className="opacity-70">{children}</del>,
+  img: ({ alt, src }) => (
+    <span className="block my-6 rounded-lg overflow-hidden border border-border shadow-md">
+      <ImageWithFallback src={src} alt={alt} className="w-full h-auto" />
+    </span>
+  ),
+  table: ({ children }) => <div className="overflow-x-auto my-6"><table className="w-full border-collapse border border-border">{children}</table></div>,
+  thead: ({ children }) => <thead className="bg-card">{children}</thead>,
+  th: ({ children }) => <th className="p-3 border border-border font-bold text-left text-primary-text">{children}</th>,
+  td: ({ children }) => <td className="p-3 border border-border text-secondary">{children}</td>,
+  pre: ({ children }) => <div className="my-6 rounded-lg overflow-hidden">{children}</div>,
+  code: ({ children, className }) => {
+    const language = className?.replace('lang-', '');
+    if (language) {
+      return (
+        <SyntaxHighlighter style={vscDarkPlus} language={language} PreTag="div">
+          {String(children).replace(/\n$/, '')}
+        </SyntaxHighlighter>
+      );
+    }
+    return (
+      <code className="bg-primary/10 text-primary rounded px-1.5 py-1 font-mono text-sm mx-1">
+        {children}
+      </code>
+    );
+  },
 };
 
 const ProjectDetail = ({ 
@@ -55,7 +94,6 @@ const ProjectDetail = ({
     [0.8, 1]
   );
 
-  // Reading time calculation
   useEffect(() => {
     if (project?.description?.[lang]) {
       const words = project.description[lang].split(/\s+/).length;
@@ -64,7 +102,6 @@ const ProjectDetail = ({
     }
   }, [project?.description, lang]);
 
-  // Force fullscreen for external links
   useEffect(() => {
     if (forceFullscreen && !isFullScreen) {
       setIsFullScreen(true);
@@ -256,7 +293,6 @@ const ProjectDetail = ({
           className="h-full bg-panel shadow-2xl flex flex-col border-l border-border overflow-hidden relative"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Resize handle */}
           {!isFullScreen && (
             <motion.div
               drag="x"
@@ -279,7 +315,6 @@ const ProjectDetail = ({
             </motion.div>
           )}
 
-          {/* Notification */}
           <AnimatePresence>
             {copyNotification && (
               <motion.div
@@ -310,7 +345,6 @@ const ProjectDetail = ({
               }}
               className="flex flex-col h-full"
             >
-              {/* Header */}
               <motion.header 
                 variants={{ visible: { y: 0, opacity: 1 }, hidden: { y: -20, opacity: 0 } }} 
                 className="p-4 flex justify-between items-start gap-4 border-b border-border flex-shrink-0 bg-panel/80 backdrop-blur-sm"
@@ -409,7 +443,6 @@ const ProjectDetail = ({
                 </div>
               </motion.header>
 
-              {/* Content */}
               <div 
                 className="flex-grow overflow-y-auto custom-scrollbar" 
                 ref={scrollableContentRef}
@@ -429,7 +462,6 @@ const ProjectDetail = ({
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
                   
-                  {/* Image loading indicator */}
                   {!imageLoaded && (
                     <div className="absolute inset-0 flex items-center justify-center bg-bg/50">
                       <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
@@ -439,23 +471,19 @@ const ProjectDetail = ({
                 
                 <motion.div 
                   variants={{ visible: { y: 0, opacity: 1 }, hidden: { y: 20, opacity: 0 } }} 
-                  className="p-6 prose dark:prose-invert max-w-none 
-                            prose-h2:font-display prose-headings:text-themed-text 
-                            prose-p:text-secondary prose-p:leading-relaxed
-                            prose-a:text-primary hover:prose-a:text-primary/80
-                            prose-strong:text-primary-text
-                            prose-li:text-secondary
-                            prose-blockquote:border-primary prose-blockquote:bg-primary/5
-                            prose-code:bg-primary/10 prose-code:text-primary prose-code:rounded prose-code:px-1
-                            prose-pre:bg-card prose-pre:border prose-pre:border-border"
+                  className="p-6"
                 >
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  <Markdown
+                    options={{
+                      overrides: MarkdownComponents,
+                      forceBlock: true,
+                    }}
+                  >
                     {project.description?.[lang] || t('noDescription') || 'No description available.'}
-                  </ReactMarkdown>
+                  </Markdown>
                 </motion.div>
               </div>
 
-              {/* Footer */}
               <motion.footer 
                 variants={{ visible: { y: 0, opacity: 1 }, hidden: { y: 20, opacity: 0 } }} 
                 className="p-4 border-t border-border flex-shrink-0 bg-panel/90 backdrop-blur"
