@@ -226,7 +226,7 @@ export const projectsData = {
         tr: "Tarayıcıda çalışan JavaScript GameBoy emülatörü.",
         en: "JavaScript GameBoy emulator running in browser."
       },
-      image: "https://i.imgur.com/Hl46nTs.png"
+      image: "https://i.imgur.com/Hl46nTs.png",
       link: "https://github.com/mehmetabak/emu",
       description: {
         tr: "## GameBoy Emülatörü\n\nNintendo GameBoy'u web tarayıcısında çalıştıran JavaScript emülatörü. Klasik oyunları modern platformda oynama imkanı sağlar.\n\n### Özellikler\n- Tam CPU emülasyonu\n- Grafik ve ses sistemi\n- ROM dosyası desteği\n- Kayıt durumu sistemi\n- Dokunmatik kontroller\n\n### Teknolojiler\n- Vanilla JavaScript\n- Canvas API\n- Web Audio API\n- Local Storage\n\nRetro oyun meraklıları için nostaljik bir deneyim sunar.",
