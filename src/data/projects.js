@@ -40,7 +40,26 @@ export const projectsData = {
       },
       tags: ["javascript", "chrome-extension", "markdown", "productivity", "browser"],
       year: 2024
-    }
+    },
+{
+  id: "extension-02",
+  title: {
+    tr: "arasTiR/Translate",
+    en: "arasTiR/Translate"
+  },
+  summary: {
+    tr: "Dil çevirisi için web sitesi ve tarayıcı uzantısı.",
+    en: "Language translator website and browser extension."
+  },
+  image: "https://i.imgur.com/pXU4g7Y.png",
+  link: "https://github.com/mehmetabak/Translate",
+  description: {
+    tr: "## arasTiR/Translate\n\nDil çevirisi için geliştirilmiş web sitesi ve tarayıcı uzantısı. Kullanıcıların hızlı ve kolay çeviri yapabilmesi için tasarlanmıştır.\n\n### Özellikler\n- Web tabanlı çeviri arayüzü\n- Tarayıcı uzantısı desteği\n- Kullanıcı dostu arayüz\n- Hızlı çeviri işlemleri\n\n### Teknolojiler\n- JavaScript\n- HTML\n- CSS\n- Tarayıcı uzantısı API'leri\n\nMicrosoft Edge mağazasında yayınlanmış ve aktif olarak kullanılmaktadır.",
+    en: "## arasTiR/Translate\n\nLanguage translator website and browser extension developed for translation services. Designed for users to perform quick and easy translations.\n\n### Features\n- Web-based translation interface\n- Browser extension support\n- User-friendly interface\n- Fast translation operations\n\n### Technologies\n- JavaScript\n- HTML\n- CSS\n- Browser extension APIs\n\nPublished on Microsoft Edge store and actively being used."
+  },
+  tags: ["javascript", "html", "css", "chrome-extension", "translation"],
+  year: 2024
+}
   ],
   "Automation Tools": [
     {
@@ -74,7 +93,7 @@ export const projectsData = {
         tr: "TypeScript ile geliştirilmiş, fotoğrafların teknik detaylarını gösteren blog platformu.",
         en: "A blog platform developed with TypeScript that displays technical details of photographs."
       },
-      image: "/images/exif-blog.png",
+      image: "https://i.imgur.com/Hl46nTs.png",
       link: "https://github.com/mehmetabak/exif-photo-blog",
       description: {
         tr: "## Fotoğraf Blog Platformu\n\nFotoğrafçılar için tasarlanmış bu platform, her fotoğrafın EXIF verilerini otomatik olarak okur ve görüntüler. TypeScript ve modern web teknolojileri kullanılarak geliştirilmiştir.\n\n### Özellikler\n- Otomatik EXIF veri okuma (diyafram, deklanşör hızı, ISO)\n- Responsive tasarım\n- Modern ve minimalist arayüz\n- Fotoğraf galerisi yönetimi\n- SEO optimize edilmiş yapı\n\n### Teknolojiler\n- TypeScript, React, Next.js\n- Sharp.js ile görsel işleme\n- Tailwind CSS\n- Vercel deployment\n\nFotoğraflarınızın teknik detaylarını paylaşmak isteyen fotoğrafçılar ve kamera meraklıları için ideal bir platform.",
@@ -93,7 +112,7 @@ export const projectsData = {
         tr: "Python tabanlı GitHub sosyal bağlantı analiz aracı.",
         en: "Python-based GitHub social connection analysis tool."
       },
-      image: "/images/github-analyzer.png",
+      image: "https://i.imgur.com/Hl46nTs.png",
       link: "https://github.com/mehmetabak/GitHub-Relationship-Analyzer",
       description: {
         tr: "## GitHub Sosyal Ağ Analizi\n\nGitHub hesabınızdaki sosyal bağlantıları analiz eden Python tabanlı araç. Jupyter Notebook ortamında çalışır ve detaylı görselleştirmeler sunar.\n\n### Ana Özellikler\n- Takip eden/takip edilen ilişki analizi\n- Ortak repository çalışmaları\n- Sosyal ağ görselleştirme\n- CSV formatında veri export\n- İstatistiksel analiz raporları\n\n### Teknolojiler\n- Python, Pandas, NumPy\n- GitHub API entegrasyonu\n- NetworkX ile görselleştirme\n- Jupyter Notebook\n- Matplotlib, Seaborn\n\nGitHub topluluğundaki konumunuzu ve işbirliği fırsatlarını keşfetmek için kullanışlı bir araç.",
@@ -112,7 +131,7 @@ export const projectsData = {
         tr: "Günlük sınır olmadan oynayabileceğiniz Türkçe kelime tahmin oyunu.",
         en: "Turkish word guessing game that you can play without daily limits."
       },
-      image: "/images/wordle-tr.png",
+      image: "https://i.imgur.com/Hl46nTs.png",
       link: "https://github.com/mehmetabak/Wordle-TR",
       description: {
         tr: "## Türkçe Wordle Oyunu\n\nPopüler Wordle oyununun Türkçe versiyonu. Günlük sınır olmaksızın istediğiniz kadar oynayabilirsiniz.\n\n### Oyun Özellikleri\n- Sınırsız oyun imkanı\n- Türkçe kelime veritabanı\n- İstatistik takibi\n- Dark/Light tema seçenekleri\n- Sonuç paylaşım özelliği\n\n### Teknik Özellikler\n- Vanilla JavaScript\n- Local Storage ile veri saklama\n- CSS3 animasyonlar\n- Responsive tasarım\n- PWA desteği\n\nTürkçe kelime dağarcığınızı geliştirmek ve eğlenmek için ideal bir oyun.",
@@ -131,7 +150,7 @@ export const projectsData = {
         tr: "FlipHTML5 kitaplarını PDF formatında indiren Python aracı.",
         en: "Python tool that downloads FlipHTML5 books in PDF format."
       },
-      image: "/images/fliphtml5-downloader.png",
+      image: "https://i.imgur.com/Hl46nTs.png",
       link: "https://github.com/mehmetabak/FlipHTML5-Downloader",
       description: {
         tr: "## FlipHTML5 İndirme Aracı\n\nFlipHTML5 platformundaki herkese açık kitapları indirerek tek PDF dosyasında birleştiren Python aracı.\n\n### Özellikler\n- Otomatik sayfa tespit ve indirme\n- Yüksek kaliteli PDF oluşturma\n- İndirme ilerlemesi takibi\n- Hata yönetimi ve yeniden deneme\n- Toplu kitap işleme\n\n### Teknolojiler\n- Python\n- BeautifulSoup4 ile web scraping\n- PyPDF2 ile PDF işleme\n- Requests kütüphanesi\n\nEğitim materyallerini ve araştırma kaynaklarını arşivlemek için kullanışlı bir araç.",
@@ -169,7 +188,7 @@ export const projectsData = {
         tr: "Notion entegrasyonlu blog platformu.",
         en: "Blog platform with Notion integration."
       },
-      image: "/images/notionic-blog.png",
+      image: "https://i.imgur.com/Hl46nTs.png",
       link: "https://github.com/mehmetabak/notionic",
       description: {
         tr: "## Notion Blog Platformu\n\nNotion'daki içeriklerinizi otomatik olarak blog sitesine dönüştüren platform. İçerik yönetimini Notion'da yapın, web sitenizde otomatik yayınlayın.\n\n### Özellikler\n- Notion API entegrasyonu\n- Otomatik içerik senkronizasyonu\n- SEO optimizasyonu\n- Responsive tasarım\n- Yorum sistemi\n\n### Teknolojiler\n- JavaScript, React, Next.js\n- Notion API\n- Tailwind CSS\n- Vercel deployment\n\nNotion kullanıcıları ve blog yazarları için pratik bir çözüm.",
@@ -188,7 +207,7 @@ export const projectsData = {
         tr: "Visual Studio Code arayüzü görünümünde portfolio websitesi.",
         en: "Portfolio website with Visual Studio Code interface appearance."
       },
-      image: "/images/vscode-portfolio.png",
+      image: "https://i.imgur.com/Hl46nTs.png",
       link: "https://github.com/mehmetabak/Dev",
       description: {
         tr: "## VS Code Portfolio\n\nVisual Studio Code arayüzünü taklit eden interaktif portfolio websitesi. Next.js ile geliştirilmiş ve Vercel'de deploy edilmiştir.\n\n### Özellikler\n- VS Code benzeri arayüz\n- Dosya gezgini simülasyonu\n- Çoklu sekme sistemi\n- Terminal entegrasyonu\n- Tema değiştirme seçenekleri\n\n### Teknolojiler\n- Next.js, React\n- CSS Modules\n- Framer Motion animasyonlar\n- Vercel deployment\n\nGeliştiriciler için yaratıcı ve özgün bir portfolio çözümü.",
@@ -207,7 +226,7 @@ export const projectsData = {
         tr: "Tarayıcıda çalışan JavaScript GameBoy emülatörü.",
         en: "JavaScript GameBoy emulator running in browser."
       },
-      image: "/images/gameboy-emu.png",
+      image: "https://i.imgur.com/Hl46nTs.png"
       link: "https://github.com/mehmetabak/emu",
       description: {
         tr: "## GameBoy Emülatörü\n\nNintendo GameBoy'u web tarayıcısında çalıştıran JavaScript emülatörü. Klasik oyunları modern platformda oynama imkanı sağlar.\n\n### Özellikler\n- Tam CPU emülasyonu\n- Grafik ve ses sistemi\n- ROM dosyası desteği\n- Kayıt durumu sistemi\n- Dokunmatik kontroller\n\n### Teknolojiler\n- Vanilla JavaScript\n- Canvas API\n- Web Audio API\n- Local Storage\n\nRetro oyun meraklıları için nostaljik bir deneyim sunar.",
@@ -226,7 +245,7 @@ export const projectsData = {
         tr: "Basit metin şifreleme ve çözme aracı.",
         en: "Simple text encryption and decryption tool."
       },
-      image: "/images/basic-encryptor.png",
+      image: "https://i.imgur.com/Hl46nTs.png",
       link: "https://github.com/mehmetabak/Basic-Encryptor",
       description: {
         tr: "## Metin Şifreleme Aracı\n\nTemel şifreleme algoritmalarını öğrenmek için geliştirilmiş eğitici araç. Çeşitli şifreleme yöntemlerini test edebilirsiniz.\n\n### Şifreleme Türleri\n- Caesar Cipher\n- Base64 kodlama\n- ROT13 algoritması\n- Ters metin şifreleme\n- Binary dönüşüm\n\n### Özellikler\n- Gerçek zamanlı şifreleme\n- Temiz ve basit arayüz\n- Kopyala-yapıştır desteği\n- Responsive tasarım\n\nKriptografi temellerini öğrenmek isteyenler için ideal bir başlangıç aracı.",
@@ -247,7 +266,7 @@ export const projectsData = {
         tr: "Eğitim kurumları için Telegram tabanlı yönetim sistemi.",
         en: "Telegram-based management system for educational institutions."
       },
-      image: "/images/telegram-arastir.png",
+      image: "https://i.imgur.com/Hl46nTs.png",
       link: "https://github.com/mehmetabak/Java-Telegram_arasTiR_Old_Bot",
       description: {
         tr: "## Eğitim Yönetim Botu\n\nTelegram üzerinde çalışan arasTiR eğitim yönetim sisteminin Java implementasyonu. Okul yöneticileri, öğrenciler ve veliler için kapsamlı dijital asistan.\n\n### Ana Modüller\n- Öğrenci bilgi yönetimi\n- Not girişi ve takibi\n- Devamsızlık kontrolü\n- Ödev yönetimi\n- Veli bilgilendirme sistemi\n\n### Teknolojiler\n- Java, Spring Boot\n- Telegram Bot API\n- MySQL veritabanı\n- JPA/Hibernate\n- JWT Authentication\n\nEğitim kurumlarının dijital dönüşümü için pratik bir çözüm.",
@@ -266,7 +285,7 @@ export const projectsData = {
         tr: "Android SharedPreferences'ın geliştirilmiş Türkçe versiyonu.",
         en: "Enhanced Turkish version of Android SharedPreferences."
       },
-      image: "/images/tinydb-android.png",
+      image: "https://i.imgur.com/w5Wi98G.png",
       link: "https://github.com/mehmetabak/TinyDB--Android-Shared-Preferences-Turbo-TR",
       description: {
         tr: "## Android Veri Saklama Kütüphanesi\n\nTinyDB kütüphanesinin geliştirilmiş ve Türkçeleştirilmiş versiyonu. Android geliştiricileri için basit veri saklama çözümü.\n\n### Desteklenen Veri Türleri\n- Temel veri türleri (int, String, boolean)\n- Koleksiyonlar (ArrayList, HashMap)\n- Özel nesneler\n- Binary veriler\n\n### Özellikler\n- Kolay kullanım\n- Türkçe dokümantasyon\n- Performans optimizasyonları\n- Hata yönetimi\n- Veri şifreleme desteği\n\n### Teknolojiler\n- Java\n- Android SDK\n- SharedPreferences API\n\nAndroid geliştirmeye yeni başlayanlar için ideal bir kütüphane.",
@@ -287,7 +306,7 @@ export const projectsData = {
         tr: "Yerel okullar için geliştirilmiş eğitim yönetim uygulamaları koleksiyonu.",
         en: "Collection of educational management applications developed for local schools."
       },
-      image: "/images/arastir-projects.png",
+      image: "https://i.imgur.com/Hl46nTs.png",
       link: "https://github.com/mehmetabak/arasTiR-Projects",
       description: {
         tr: "## Eğitim Yönetim Sistemleri\n\nYerel eğitim kurumları için geliştirilmiş arasTiR uygulamalarının kapsamlı koleksiyonu. Her modül gerçek okul ihtiyaçlarına yönelik çözümler sunuyor.\n\n### Sistem Modülleri\n- Öğrenci bilgi sistemi\n- Not yönetimi\n- Devamsızlık takibi\n- Kütüphane otomasyonu\n- Ücret takip sistemi\n- Otomatik rapor oluşturucu\n\n### Teknik Özellikler\n- Çoklu okul desteği\n- Türkçe arayüz\n- Offline çalışma\n- Excel/PDF export\n- Mobil uyumlu tasarım\n\n### Teknolojiler\n- Python, Django\n- PostgreSQL\n- HTML5, CSS3, JavaScript\n- RESTful API\n\n15+ yerel okula hizmet veren, binlerce öğrenci kaydını yöneten kapsamlı eğitim platformu.",
@@ -308,7 +327,7 @@ export const projectsData = {
         tr: "Kişisel bilgiler ve projeler hakkında soru yanıtlayan Telegram botu.",
         en: "Telegram bot that answers questions about personal information and projects."
       },
-      image: "/images/telegram-info-bot.png",
+      image: "https://i.imgur.com/Hl46nTs.png",
       link: "https://github.com/mehmetabak/Telegram-JS-Bot",
       description: {
         tr: "## Kişisel Asistan Bot\n\nJavaScript ile geliştirilmiş akıllı Telegram botu. Kullanıcılar hakkınızda veya projeleriniz hakkında soru sorabilir ve bot otomatik yanıtlar verir.\n\n### Bot Özellikleri\n- CV bilgileri paylaşımı\n- Proje detayları\n- İletişim bilgileri\n- Yetenek ve deneyim bilgileri\n- Sık sorulan sorular\n\n### Teknik Özellikler\n- 24/7 çalışma\n- Netlify Functions\n- JSON tabanlı bilgi depolama\n- Çoklu dil desteği\n- Kullanım istatistikleri\n\n### Teknolojiler\n- JavaScript, Node.js\n- Telegram Bot API\n- Netlify deployment\n- Serverless functions\n\nİş görüşmeleri ve network genişletme için kullanışlı bir araç.",
