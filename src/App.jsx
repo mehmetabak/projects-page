@@ -138,30 +138,68 @@ function ProjectPage() {
     handleProjectSelect(prevProject, category);
   };
 
-  // Keyboard shortcuts
+  // Meta Tags - Dinamik sayfa title'ı
   useEffect(() => {
-    const handleGlobalKeyDown = (e) => {
+    if (selectedProject) {
+      const projectTitle = selectedProject.project.title[i18n.language] || selectedProject.project.title.en;
+      document.title = `${projectTitle} - Portfolio`;
+    } else {
+      document.title = 'Portfolio';
+    }
+  }, [selectedProject, i18n.language]);
+
+  // Keyboard shortcuts - Geliştirilmiş versiyon
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Input/textarea içindeyken kısayolları devre dışı bırak
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       
-      if (e.ctrlKey || e.metaKey) {
+      // Modal açıkken
+      if (selectedProject) {
         switch(e.key) {
-          case 'k':
+          case 'Escape':
             e.preventDefault();
-            document.querySelector('input[type="search"]')?.focus();
+            handleClose();
             break;
-          case '/':
-            e.preventDefault();
-            document.querySelector('input[type="search"]')?.focus();
+          case 'ArrowLeft':
+            if (e.shiftKey) {
+              e.preventDefault();
+              handlePrevious();
+            }
             break;
+          case 'ArrowRight':
+            if (e.shiftKey) {
+              e.preventDefault();
+              handleNext();
+            }
+            break;
+        }
+      } else {
+        // Ana sayfadayken
+        if (e.ctrlKey || e.metaKey) {
+          switch(e.key) {
+            case 'k':
+            case '/':
+              e.preventDefault();
+              document.querySelector('input[type="search"]')?.focus();
+              break;
+          }
+        }
+        
+        // Kategori değiştirme (1-9 tuşları)
+        if (e.key >= '1' && e.key <= '9') {
+          const categoryIndex = parseInt(e.key) - 1;
+          const categories = ['All', ...projectCategories];
+          if (categories[categoryIndex]) {
+            setActiveCategory(categories[categoryIndex]);
+          }
         }
       }
     };
     
-    if (!selectedProject) {
-      window.addEventListener('keydown', handleGlobalKeyDown);
-      return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-    }
-  }, [selectedProject]);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedProject, projectCategories]);
 
   const hasResults = Object.keys(filteredProjects).length > 0;
 
