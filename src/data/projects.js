@@ -11,7 +11,7 @@ export const projectsData = {
         tr: "Gemini, GPT ve açık kaynak AI modellerinin entegrasyonu için geliştirilmiş deneysel platform.",
         en: "Experimental platform developed for integration of Gemini, GPT and open-source AI models."
       },
-      image: "/images/nai-platform.png",
+      image: "https://i.imgur.com/hZ8E8Oz.png",
       link: "https://github.com/mehmetabak/nAI",
       description: {
         tr: "## AI Modelleri Test Platformu\n\nFarklı AI modellerini tek platformda test etmek için geliştirilmiş proje. Kapalı kaynak ve açık kaynak modeller arasında köprü görevi görür.\n\n### Platform Özellikleri\n- Gemini, GPT ve açık kaynak model entegrasyonu\n- JSON konfigürasyonu ile yeni model ekleme\n- Eğitimsel amaçlı kullanım\n- Topluluk katkılarına açık yapı\n- Kolay yerel kurulum\n\n### Teknik Özellikler\n- Vite ile geliştirilmiş modern UI\n- API entegrasyonları\n- Modüler model yönetimi\n- Topluluk katkı sistemi\n\n### Teknolojiler\n- JavaScript, Vite\n- Multiple AI API integrations\n- JSON configuration\n- Git branching strategy\n\nAI geliştiricileri ve araştırmacıları için işbirliği ve deneyim platformu.",

@@ -75,7 +75,7 @@ const ProjectDetail = ({
   const [isFullScreen, setIsFullScreen] = useState(forceFullscreen);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [copyNotification, setCopyNotification] = useState('');
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageStatus, setImageStatus] = useState('loading'); // 'loading', 'loaded', 'error'
   const [readingTime, setReadingTime] = useState(0);
   
   const constraintsRef = useRef(null);
@@ -106,7 +106,7 @@ const ProjectDetail = ({
     if (forceFullscreen && !isFullScreen) {
       setIsFullScreen(true);
     }
-  }, [forceFullscreen]);
+  }, [forceFullscreen, isFullScreen]);
 
   const toggleFullscreen = useCallback(() => {
     if (!isFullScreen) {
@@ -225,7 +225,7 @@ const ProjectDetail = ({
     } else {
       fallbackCopy(shareUrl);
     }
-  }, [project?.id, project?.title, project?.summary, lang]);
+  }, [project?.id, project?.title, project?.summary, lang, t]);
 
   const fallbackCopy = async (text) => {
     try {
@@ -249,7 +249,7 @@ const ProjectDetail = ({
       setIsBookmarked(false);
     }
 
-    setImageLoaded(false);
+    setImageStatus('loading');
     scrollableContentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   }, [project?.id]);
 
@@ -447,41 +447,46 @@ const ProjectDetail = ({
                 className="flex-grow overflow-y-auto custom-scrollbar" 
                 ref={scrollableContentRef}
               >
-                <motion.div 
-                  variants={{ visible: { scale: 1, opacity: 1 }, hidden: { scale: 0.98, opacity: 0 } }}
-                  transition={{ duration: 0.3, ease: 'easeOut' }}
-                  className="relative overflow-hidden"
-                >
-                  <ImageWithFallback 
-                    src={project.image} 
-                    alt={project.title?.[lang] || 'Project image'} 
-                    className={`w-full h-60 object-cover transition-all duration-700 ${
-                      imageLoaded ? 'hover:scale-105' : 'scale-105 blur-sm'
-                    }`}
-                    onLoad={() => setImageLoaded(true)}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                  
-                  {!imageLoaded && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-bg/50">
-                      <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
-                    </div>
-                  )}
-                </motion.div>
-                
-                <motion.div 
-                  variants={{ visible: { y: 0, opacity: 1 }, hidden: { y: 20, opacity: 0 } }} 
-                  className="p-6"
-                >
-                  <Markdown
-                    options={{
-                      overrides: MarkdownComponents,
-                      forceBlock: true,
-                    }}
+                <div className="p-4 md:p-6">
+                  <motion.div 
+                    variants={{ visible: { scale: 1, opacity: 1 }, hidden: { scale: 0.98, opacity: 0 } }}
+                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                    className="group relative overflow-hidden bg-card rounded-xl shadow-lg border border-border/50 mb-6"
                   >
-                    {project.description?.[lang] || t('noDescription') || 'No description available.'}
-                  </Markdown>
-                </motion.div>
+                    <ImageWithFallback 
+                      src={project.image} 
+                      alt={project.title?.[lang] || 'Project image'} 
+                      className={`w-full aspect-video object-cover transition-all duration-700 ${
+                        imageStatus === 'loading' 
+                          ? 'scale-105 blur-md' 
+                          : 'scale-100 blur-0 group-hover:scale-105'
+                      }`}
+                      onLoad={() => setImageStatus('loaded')}
+                      onError={() => setImageStatus('error')}
+                    />
+                    
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+                    
+                    {imageStatus === 'loading' && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-panel/20 backdrop-blur-sm">
+                        <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+                      </div>
+                    )}
+                  </motion.div>
+                
+                  <motion.div 
+                    variants={{ visible: { y: 0, opacity: 1 }, hidden: { y: 20, opacity: 0 } }} 
+                  >
+                    <Markdown
+                      options={{
+                        overrides: MarkdownComponents,
+                        forceBlock: true,
+                      }}
+                    >
+                      {project.description?.[lang] || t('noDescription') || 'No description available.'}
+                    </Markdown>
+                  </motion.div>
+                </div>
               </div>
 
               <motion.footer 
