@@ -33,12 +33,18 @@ function ProjectPage() {
     localStorage.setItem('theme', theme);
   }, [theme, i18n.language]);
 
-  // Dış linkten gelme kontrolü
+  // Dış linkten gelme kontrolü - düzeltilmiş versiyon
   useEffect(() => {
-    if (projectId && document.referrer && !document.referrer.includes(window.location.hostname)) {
-      setIsExternalLink(true);
+    if (projectId) {
+      // Eğer location.state yoksa ve sayfa yenilendi/direct link ile gelindiyse
+      const isDirectAccess = !location.state && 
+        (document.referrer === '' || !document.referrer.includes(window.location.hostname));
+      
+      setIsExternalLink(isDirectAccess);
+    } else {
+      setIsExternalLink(false);
     }
-  }, [projectId]);
+  }, [projectId, location.state]);
 
   // URL tabanlı proje açma - memoized project finder
   const allProjects = useMemo(() => 
@@ -58,7 +64,6 @@ function ProjectPage() {
       }
     } else {
       setSelectedProject(null);
-      setIsExternalLink(false);
     }
   }, [projectId, allProjects]);
 
@@ -96,14 +101,21 @@ function ProjectPage() {
     
     if (shouldNavigate) {
       navigate(`/projects/${project.id}`, { 
-        state: { fromSearch: !!searchTerm }
+        state: { 
+          fromSearch: !!searchTerm,
+          isModal: true // Modal olduğunu belirt
+        }
       });
     }
   };
 
   const handleClose = () => {
     setIsExternalLink(false);
-    navigate('/', { replace: location.state?.fromSearch });
+    if (location.state?.fromSearch) {
+      navigate('/', { replace: true });
+    } else {
+      navigate('/', { replace: true });
+    }
   };
 
   const handleNext = () => {
@@ -112,7 +124,8 @@ function ProjectPage() {
     const projectList = filteredProjects[category] || [];
     if (projectList.length < 2) return;
     const nextIndex = (index + 1) % projectList.length;
-    handleProjectSelect(projectList[nextIndex], category);
+    const nextProject = projectList[nextIndex];
+    handleProjectSelect(nextProject, category);
   };
 
   const handlePrevious = () => {
@@ -121,7 +134,8 @@ function ProjectPage() {
     const projectList = filteredProjects[category] || [];
     if (projectList.length < 2) return;
     const prevIndex = (index - 1 + projectList.length) % projectList.length;
-    handleProjectSelect(projectList[prevIndex], category);
+    const prevProject = projectList[prevIndex];
+    handleProjectSelect(prevProject, category);
   };
 
   // Keyboard shortcuts
