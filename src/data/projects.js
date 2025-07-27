@@ -41,25 +41,25 @@ export const projectsData = {
       tags: ["javascript", "chrome-extension", "markdown", "productivity", "browser"],
       year: 2024
     },
-{
-  id: "extension-02",
-  title: {
-    tr: "arasTiR/Translate",
-    en: "arasTiR/Translate"
-  },
-  summary: {
-    tr: "Dil çevirisi için web sitesi ve tarayıcı uzantısı.",
-    en: "Language translator website and browser extension."
-  },
-  image: "https://i.imgur.com/pXU4g7Y.png",
-  link: "https://github.com/mehmetabak/Translate",
-  description: {
-    tr: "## arasTiR/Translate\n\nDil çevirisi için geliştirilmiş web sitesi ve tarayıcı uzantısı. Kullanıcıların hızlı ve kolay çeviri yapabilmesi için tasarlanmıştır.\n\n### Özellikler\n- Web tabanlı çeviri arayüzü\n- Tarayıcı uzantısı desteği\n- Kullanıcı dostu arayüz\n- Hızlı çeviri işlemleri\n\n### Teknolojiler\n- JavaScript\n- HTML\n- CSS\n- Tarayıcı uzantısı API'leri\n\nMicrosoft Edge mağazasında yayınlanmış ve aktif olarak kullanılmaktadır.",
-    en: "## arasTiR/Translate\n\nLanguage translator website and browser extension developed for translation services. Designed for users to perform quick and easy translations.\n\n### Features\n- Web-based translation interface\n- Browser extension support\n- User-friendly interface\n- Fast translation operations\n\n### Technologies\n- JavaScript\n- HTML\n- CSS\n- Browser extension APIs\n\nPublished on Microsoft Edge store and actively being used."
-  },
-  tags: ["javascript", "html", "css", "chrome-extension", "translation"],
-  year: 2024
-}
+    {
+      id: "extension-02",
+      title: {
+        tr: "arasTiR/Translate",
+        en: "arasTiR/Translate"
+      },
+      summary: {
+        tr: "Dil çevirisi için web sitesi ve tarayıcı uzantısı.",
+        en: "Language translator website and browser extension."
+      },
+      image: "https://i.imgur.com/pXU4g7Y.png",
+      link: "https://github.com/mehmetabak/Translate",
+      description: {
+        tr: "## arasTiR/Translate\n\nDil çevirisi için geliştirilmiş web sitesi ve tarayıcı uzantısı. Kullanıcıların hızlı ve kolay çeviri yapabilmesi için tasarlanmıştır.\n\n### Özellikler\n- Web tabanlı çeviri arayüzü\n- Tarayıcı uzantısı desteği\n- Kullanıcı dostu arayüz\n- Hızlı çeviri işlemleri\n\n### Teknolojiler\n- JavaScript\n- HTML\n- CSS\n- Tarayıcı uzantısı API'leri\n\nMicrosoft Edge mağazasında yayınlanmış ve aktif olarak kullanılmaktadır.",
+        en: "## arasTiR/Translate\n\nLanguage translator website and browser extension developed for translation services. Designed for users to perform quick and easy translations.\n\n### Features\n- Web-based translation interface\n- Browser extension support\n- User-friendly interface\n- Fast translation operations\n\n### Technologies\n- JavaScript\n- HTML\n- CSS\n- Browser extension APIs\n\nPublished on Microsoft Edge store and actively being used."
+      },
+      tags: ["javascript", "html", "css", "chrome-extension", "translation"],
+      year: 2024
+    }
   ],
   "Automation Tools": [
     {
