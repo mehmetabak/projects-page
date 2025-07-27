@@ -32,7 +32,7 @@ export const projectsData = {
         tr: "Her sekme için özel yapışkan notlar sunan yüksek performanslı Chrome eklentisi.",
         en: "High-performance Chrome extension offering custom sticky notes for each tab."
       },
-      image: "/images/tab-note.png",
+      image: "https://i.imgur.com/7ekZ74N.png",
       link: "https://github.com/mehmetabak/tab-note",
       description: {
         tr: "## Sekme Bazlı Not Yönetimi\n\nHer web sitesi sekmesi için ayrı not tutmanızı sağlayan Chrome eklentisi. Modern tasarım ve yüksek performans odaklı geliştirilmiştir.\n\n### Temel Özellikler\n- Sekme bazında kalıcı notlar\n- Tam Markdown desteği\n- İnteraktif checkbox'lar\n- GPU hızlandırmalı sürükleme\n- Lazy loading ile performans optimizasyonu\n\n### Gelişmiş Özellikler\n- Ayarlar paneli (font boyutu, şeffaflık)\n- Köşeye sabitleme özelliği\n- İçerik kopyalama butonu\n- Modern karanlık tema\n- Sürükleyerek taşıma\n\n### Teknolojiler\n- JavaScript (ES6+)\n- Chrome Extension API (Manifest V3)\n- HTML5 & CSS3\n- Marked.js (Markdown parser)\n\nÜretkenliğinizi artırmak için tasarlanmış minimalist not alma çözümü.",
@@ -72,7 +72,7 @@ export const projectsData = {
         tr: "ÖSYM sınav sonuçlarını otomatik kontrol eden ve Telegram bildirimi gönderen serverless bot.",
         en: "Serverless bot that automatically checks ÖSYM exam results and sends Telegram notifications."
       },
-      image: "/images/yks-bot.png",
+      image: "https://i.imgur.com/YFJN1gk.png",
       link: "https://github.com/mehmetabak/YKS-Bot",
       description: {
         tr: "## Sınav Sonucu Takip Sistemi\n\nÖSYM'nin Aday İşlemleri Sistemi üzerinden YKS ve MSÜ sonuçlarını periyodik olarak kontrol eden serverless bot. Yeni sonuç yayınlandığında anında Telegram bildirimi gönderir.\n\n### Ana Özellikler\n- Otomatik sonuç kontrolü\n- Anında Telegram bildirimleri\n- Ekran görüntüsü ile sonuç paylaşımı\n- Proaktif oturum yönetimi\n- Uzaktan bot kontrolü (/basla, /araver)\n\n### Teknik Mimarı\n- Netlify Functions üzerinde serverless çalışma\n- JSONBin.io ile güvenli veri depolama\n- Puppeteer ile web otomasyonu\n- Cookie tabanlı oturum yönetimi\n- Zamanlanmış fonksiyon tetikleme\n\n### Teknolojiler\n- Node.js\n- Netlify Functions\n- Puppeteer (@sparticuz/chromium)\n- Telegram Bot API\n- JSONBin.io\n\nSınav sonuçlarını bekleyen öğrenciler için pratik bildirim sistemi.",
@@ -169,7 +169,7 @@ export const projectsData = {
         tr: "Web tabanlı video editörlük ve animasyon aracı.",
         en: "Web-based video editing and animation tool."
       },
-      image: "/images/animation-maker.png",
+      image: "https://i.imgur.com/mYDzETN.png",
       link: "https://github.com/mehmetabak/text-match-cut-video",
       description: {
         tr: "## Video Animasyon Aracı\n\nKarmaşık video efektleri ve animasyonları otomatikleştiren web tabanlı editör. Profesyonel videolar oluşturmayı kolaylaştırır.\n\n### Özellikler\n- Text-based video kesme\n- Hazır animasyon şablonları\n- Otomatik ses senkronizasyonu\n- Filter ve efekt koleksiyonu\n- Gerçek zamanlı önizleme\n\n### Teknolojiler\n- JavaScript\n- WebGL ile GPU hızlandırma\n- Canvas API\n- Web Workers\n- FFmpeg.js\n\nContent creatorlar ve video editörlüğüne yeni başlayanlar için ideal bir araç.",
