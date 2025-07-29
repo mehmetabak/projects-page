@@ -99,7 +99,7 @@ export const projectsData = {
         tr: "## Proje Portföy Platformu\n\nTüm projelerimi kategorize ederek sergileyen modern web sitesi. Bu proje aynı zamanda kendini de göstererek meta bir yaklaşım sergiliyor.\n\n### Ana Özellikler\n- Kategori bazlı proje organizasyonu\n- Detaylı proje açıklamaları\n- Responsive tasarım\n- Arama ve filtreleme\n- Çoklu dil desteği (TR/EN)\n- Dark/Light tema seçenekleri\n\n### Teknik Özellikler\n- Modern JavaScript framework'ü\n- Component tabanlı mimari\n- SEO optimize edilmiş yapı\n- Fast loading ve performans odaklı\n- Progressive Web App desteği\n\n### Teknolojiler\n- React/Next.js\n- Tailwind CSS\n- JavaScript/TypeScript\n- Responsive design\n- Git versioning\n\nGeliştiriciler ve işverenler için kapsamlı bir proje vitrini.",
         en: "## Project Portfolio Platform\n\nModern website that showcases all my projects in categorized format. This project also displays itself, creating a meta approach.\n\n### Main Features\n- Category-based project organization\n- Detailed project descriptions\n- Responsive design\n- Search and filtering\n- Multi-language support (TR/EN)\n- Dark/Light theme options\n\n### Technical Features\n- Modern JavaScript framework\n- Component-based architecture\n- SEO optimized structure\n- Fast loading and performance focused\n- Progressive Web App support\n\n### Technologies\n- React/Next.js\n- Tailwind CSS\n- JavaScript/TypeScript\n- Responsive design\n- Git versioning\n\nComprehensive project showcase for developers and employers."
       },
-      tags: ["react", "nextjs", "tailwind", "portfolio", "responsive", "javascript"],
+      tags: ["react", "vite", "tailwind", "portfolio", "responsive", "javascript"],
       year: 2025
     },
     {
