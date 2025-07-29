@@ -10,12 +10,11 @@ The application is a Single Page Application (SPA) that features smooth animatio
 
 ---
 
-### 🚀 [Live Demo](https://your-live-demo-url.com)
+### 🚀 [Live Demo](https://m0s-projects.vercel.app/)
 
-**(Add a link to your deployed project here)**
 
-![Project Showcase GIF](https://your-gif-or-image-url.com/demo.gif)
-**(It's highly recommended to add a GIF or a screenshot of your project in action)**
+
+![Project Showcase](https://i.imgur.com/UMa4ryb.png)
 
 ## ✨ Features
 
@@ -116,11 +115,6 @@ This project has a solid foundation, but there's always room for improvement. He
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Please make sure to update tests as appropriate.
 
-## 📬 Contact
-
-Your Name – [@your_twitter](https://twitter.com/your_twitter) – your.email@example.com
-
-Project Link: [https://github.com/your-username/your-repo-name](https://github.com/your-username/your-repo-name)
 
 ## 📄 License
 
