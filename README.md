@@ -10,7 +10,7 @@ The application is a Single Page Application (SPA) that features smooth animatio
 
 ---
 
-### 🚀 [Live Demo](https://m0s-projects.vercel.app/)
+### 🚀 [Live Site](https://m0s-projects.vercel.app/)
 
 
 
